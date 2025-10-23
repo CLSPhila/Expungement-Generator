@@ -98,6 +98,20 @@ However, if your instance of the EG has users from multiple organizations, only 
 
 If a guest organization needs to record their expungements, they should host their own instance of the EG.
 
+### Deploying
+
+You will need to have a `.env` file with the variables:
+
+```
+REPOSITORY=
+IMAGENAME=
+TAG=
+SECRET_KEY=
+
+```
+
+Once you have those with their respective values. You will need to run `make docker` and `make push` to build and push to the container registry.
+
 ## Motivation
 
 Expungements are the most effective way to help an individual with a criminal record to find employment. It is near impossible to find decent work if you have a record that is visible to the world. Expungements are both time consuming and require the attention of a lawyer to properly prepare. But they are also very boring for lawyers to prepare. In an organization like CLS where we prepare thousands of expungement petitions a year, it is critical to speed up the process and remove much of the rote work from the lawyers working on expungements. The EG does both of those things. I am currently working on EG 2.0, which will be more accessible to non-lawyer petitioners.

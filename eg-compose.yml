@@ -20,7 +20,7 @@ services:
             DB_USER: eg_user
             DB_PASS: somerandompassword
             SENDGRID_KEY: somerandomkey
-            docketscaperAPIURL: "docketscraper_api"
+            docketscaperAPIURL: "https://recoscope-d4157e2ccc9b.herokuapp.com/api/ujs"
         networks:
             - eg-net
         ports:
