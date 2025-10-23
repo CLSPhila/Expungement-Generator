@@ -44,7 +44,7 @@ services:
     expose:
       - "3306"
   docketscraperapi:
-    image: "${REPOSITORY}/eg-docketscraper:v2.0.0"
+    image: "${REPOSITORY}/eg-docketscraper:v2.0.1"
     restart: always
     environment:
       GUNICORN_LOGGER: "true"
