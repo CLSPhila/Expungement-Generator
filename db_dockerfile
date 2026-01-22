@@ -1,6 +1,7 @@
-FROM mysql:5.7
+FROM mysql:9.5.0
 
-RUN apt-get update && apt-get install -y unattended-upgrades apt-listchanges
+RUN microdnf update
+RUN microdnf upgrade -y
 
 COPY conf.d/disable_strict_mode.cnf /etc/mysql/conf.d/disable_strict_mode.cnf
 

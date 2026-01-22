@@ -8,8 +8,8 @@ endif
 
 .PHONY: docker
 docker:
-	docker build -f Dockerfile --tag ${REPOSITORY}/${IMAGENAME}:${TAG} https://github.com/NateV/Expungement-Generator.git\#main 
-	docker build -f db_dockerfile --tag ${REPOSITORY}/${IMAGENAME}_db:${TAG} https://github.com/NateV/Expungement-Generator.git\#main
+	docker build -f Dockerfile --platform=linux/amd64 --tag ${REPOSITORY}/${IMAGENAME}:${TAG} . 
+	docker build -f db_dockerfile --platform=linux/amd64 --tag ${REPOSITORY}/${IMAGENAME}_db:${TAG} .
 
 .PHONY: push
 push:

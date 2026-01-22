@@ -20,7 +20,7 @@ services:
             DB_USER: eg_user
             DB_PASS: somerandompassword
             SENDGRID_KEY: somerandomkey
-            docketscaperAPIURL: "docketscraper_api"
+            docketscaperAPIURL: "https://recoscope-d4157e2ccc9b.herokuapp.com/api/ujs"
         networks:
             - eg-net
         ports:
@@ -28,6 +28,7 @@ services:
         volumes:
             - type: mount
               target: /data
+        platform: linux/amd64
     db:
         image: eg_db # or natev/eg-docker-db:latest
         build:
@@ -43,6 +44,7 @@ services:
             - eg-net
         expose:
             - "3306"
+        platform: linux/amd64
     docketscraper_api:
         image: "natev/docketscraper_api"
         restart: always
@@ -50,5 +52,6 @@ services:
           - eg-net
         expose:
             - "8800"
+        platform: linux/amd64
 networks:
     eg-net:

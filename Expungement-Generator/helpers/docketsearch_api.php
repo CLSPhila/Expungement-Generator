@@ -15,8 +15,7 @@ require_once("config.php");
 //   the search.
 function docketNameSearch($firstName, $lastName, $dob) {
   global $docketScraperAPIURL;
-  $ch = curl_init($docketScraperAPIURL . "/" .
-                  "ujs/search/name/");
+  $ch = curl_init($docketScraperAPIURL . "/ujs/search/name/");
   $jsonData = array(
     "first_name" => $firstName,
     "last_name" => $lastName
