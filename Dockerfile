@@ -1,14 +1,13 @@
 # Dockerfile for Expungement Generator's frontend.
 
-FROM php:7.2-apache-stretch
+FROM php:8.3-apache
 
-RUN apt-get update && \
-    apt-get upgrade -y && \
-    apt-get install -y git nano wget python2.7 libfontconfig poppler-utils cron zlib1g-dev nano unattended-upgrades apt-listchanges && \
-    ln -s /usr/bin/pdftotext /usr/local/bin/pdftotext
+RUN apt-get update
+RUN apt-get upgrade -y
+RUN apt-get install -y git nano wget python3 libfontconfig poppler-utils cron zlib1g-dev nano unattended-upgrades apt-listchanges libzip-dev
+RUN ln -s /usr/bin/pdftotext /usr/local/bin/pdftotext
 
-RUN cd /usr/local/include && \
-    ln -s /usr/bin/python2.7 /usr/bin/python
+RUN cd /usr/local/include
 
 
 RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli && docker-php-ext-install zip
@@ -24,7 +23,7 @@ COPY ./docker-config.php /var/www/html/config.php
 
 RUN mkdir -p /data && \
     mkdir -p /var/www/html/docketsheets && \
-    useradd -ms /bin/bash eg_user && \
+    adduser --disabled-password --home "$(pwd)" --shell /bin/bash eg_user && \
     chown eg_user:eg_user /data && \
     chown eg_user:eg_user /var/www/html/docketsheets && \
     curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
@@ -33,7 +32,8 @@ RUN mkdir -p /data && \
 
 USER eg_user:eg_user
 
-RUN composer install
+RUN cd /var/www/html/ && \
+    composer install
 
 USER root
 
