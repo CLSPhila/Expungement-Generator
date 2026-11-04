@@ -1,6 +1,6 @@
 # Dockerfile for Expungement Generator's frontend.
 
-FROM php:8.3-apache
+FROM php:8.3.36-apache
 
 RUN apt-get update
 RUN apt-get upgrade -y
