@@ -473,6 +473,8 @@ print "
     // downloads a docketsheet from CPCMS.
     public static function getDocket($docketURL, $docketNumber, $isSummary)
     {
+        if (str_contains($docketNumber, "https://"))
+          return null;
         $ch = CPCMS::initConnection();
         curl_setopt($ch, CURLOPT_URL, $docketURL);
 
