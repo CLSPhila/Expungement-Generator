@@ -21,6 +21,7 @@
 
 require_once("config.php");
 require_once("ArrestSummary.php");
+require_once("utils.php");
 require_once("helpers/docketsearch_api.php");
 require_once("helpers/docket_number_from_url.php");
 
@@ -60,7 +61,7 @@ class CPCMS
         "MDJ" => $mdj
       );
       foreach ($results as $res)  {
-        if (preg_match("^MJ.*", $res)) {
+        if (safe_preg_match("^MJ.*", $res)) {
           $split["MDJ"][] = $res;
         } else {
           $split["CP"][] = $res;
@@ -390,7 +391,7 @@ print "
             return 0;
 
         // if this is a closed case and it is criminal, return it
-        if (preg_match("/Closed/", $aResults[0]["case_status"]) && preg_match("/\-".$bestDocketTell."\-/", $aResults[0]["docket_number"]))
+        if (safe_preg_match("/Closed/", $aResults[0]["case_status"]) && safe_preg_match("/\-".$bestDocketTell."\-/", $aResults[0]["docket_number"]))
             return $aResults[0]["summary_url"];
 
         // otherwise, remove the first element from the array (the one that we just rejected) and try again
@@ -472,6 +473,8 @@ print "
     // downloads a docketsheet from CPCMS.
     public static function getDocket($docketURL, $docketNumber, $isSummary)
     {
+        if (str_contains($docketNumber, "https://"))
+          return null;
         $ch = CPCMS::initConnection();
         curl_setopt($ch, CURLOPT_URL, $docketURL);
 

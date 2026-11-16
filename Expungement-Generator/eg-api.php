@@ -47,7 +47,7 @@
 					     //Return it at the end in write_to_resource_log()
 		// a cpcmsSearch flag can be set to true in the post request
 		// to trigger a cpcms search.
-		if (isset($request['cpcmsSearch']) && preg_match('/^(t|true|1)$/i', $request['cpcmsSearch'])===1){
+		if (isset($request['cpcmsSearch']) && safe_preg_match('/^(t|true|1)$/i', $request['cpcmsSearch'])===1){
 			$log_trail .= ",cpcmsSearch";
 			$urlPerson = getPersonFromPostOrSession($request);
 
@@ -141,7 +141,7 @@
     $files=[];
 
 		error_log("beginning to create petitions, if requested.");
-		if (preg_match('/^(t|true|1)$/i', $request['createPetitions'])===1) {
+		if (safe_preg_match('/^(t|true|1)$/i', $request['createPetitions'])===1) {
     		$files = doExpungements(
 					$record->getArrests(), $templateDir, $dataDir,
 					$record->getPerson(),
@@ -186,9 +186,9 @@
 
 		error_log("checking whether to email petitions.");
 
-		if (isset($request['emailPetitions']) && preg_match('/^(t|true|1)$/i', $request['emailPetitions'])===1){
+		if (isset($request['emailPetitions']) && safe_preg_match('/^(t|true|1)$/i', $request['emailPetitions'])===1){
 			$log_trail .= ",emailing results";
-			if (!(isset($request['createPetitions']) && preg_match('/^(t|true|1)$/i', $request['createPetitions'])===1)) {
+			if (!(isset($request['createPetitions']) && safe_preg_match('/^(t|true|1)$/i', $request['createPetitions'])===1)) {
 				$file_path = NULL;
 				if (isset($response['results']['expungeZip'])) {
 					unset($response['results']['expungeZip']);

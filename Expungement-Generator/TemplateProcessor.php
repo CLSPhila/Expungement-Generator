@@ -17,6 +17,8 @@
 
 namespace PhpOffice\PhpWord;
 
+require_once("utils.php")
+
 use PhpOffice\PhpWord\Escaper\RegExp;
 use PhpOffice\PhpWord\Escaper\Xml;
 use PhpOffice\PhpWord\Exception\CopyFileException;
@@ -282,7 +284,7 @@ class TemplateProcessor
         $xmlRow = $this->getSlice($rowStart, $rowEnd);
 
         // Check if there's a cell spanning multiple rows.
-        if (preg_match('#<w:vMerge w:val="restart"/>#', $xmlRow)) {
+        if (safe_preg_match('#<w:vMerge w:val="restart"/>#', $xmlRow)) {
             // $extraRowStart = $rowEnd;
             $extraRowEnd = $rowEnd;
             while (true) {
@@ -296,8 +298,8 @@ class TemplateProcessor
 
                 // If tmpXmlRow doesn't contain continue, this row is no longer part of the spanned row.
                 $tmpXmlRow = $this->getSlice($extraRowStart, $extraRowEnd);
-                if (!preg_match('#<w:vMerge/>#', $tmpXmlRow) &&
-                    !preg_match('#<w:vMerge w:val="continue" />#', $tmpXmlRow)) {
+                if (!safe_preg_match('#<w:vMerge/>#', $tmpXmlRow) &&
+                    !safe_preg_match('#<w:vMerge w:val="continue" />#', $tmpXmlRow)) {
                     break;
                 }
                 // This row was a spanned row, update $rowEnd and search for the next row.
@@ -327,7 +329,7 @@ class TemplateProcessor
     public function cloneBlock($blockname, $clones = 1, $replace = true)
     {
         $xmlBlock = null;
-        preg_match(
+        safe_preg_match(
             '/(<\?xml.*)(<w:p.*>\${' . $blockname . '}<\/w:.*?p>)(.*)(<w:p.*\${\/' . $blockname . '}<\/w:.*?p>)/is',
             $this->tempDocumentMainPart,
             $matches
@@ -362,7 +364,7 @@ class TemplateProcessor
      */
     public function replaceBlock($blockname, $replacement)
     {
-        preg_match(
+        safe_preg_match(
             '/(<\?xml.*)(<w:p.*>\${' . $blockname . '}<\/w:.*?p>)(.*)(<w:p.*\${\/' . $blockname . '}<\/w:.*?p>)/is',
             $this->tempDocumentMainPart,
             $matches
@@ -498,7 +500,7 @@ class TemplateProcessor
      */
     protected function getVariablesForPart($documentPartXML)
     {
-        preg_match_all('/\$\{(.*?)}/i', $documentPartXML, $matches);
+        safe_preg_match_all('/\$\{(.*?)}/i', $documentPartXML, $matches);
 
         return $matches[1];
     }
