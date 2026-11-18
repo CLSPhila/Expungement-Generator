@@ -22,7 +22,7 @@
 	function cleanFilename($fname) {
 		// Strip a string of characters that shouldn't be in 
 		// a filename.
-		if (!(safe_preg_match("/[^a-z0-9\.]/i", $fname) || safe_preg_match("/[.]{2,}/i", $fname))) {
+		if (!(preg_match("/[^a-z0-9\.]/i", $fname) || preg_match("/[.]{2,}/i", $fname))) {
 			return($fname);
 		} else {
 			$fname = preg_replace("/[^a-z0-9\.]/i","", $fname); //remove non-alphanumeric charaters or .

@@ -339,7 +339,7 @@ class Arrest
 	// @return true if the arrestRecordFile is a docket sheet, false if it isn't
 	public function isDocketSheet($arrestRecordFile)
 	{
-		if (safe_preg_match("/Docket/i", $arrestRecordFile))
+		if (preg_match("/Docket/i", $arrestRecordFile))
 			return true;
 		else
 			return false;
@@ -348,7 +348,7 @@ class Arrest
 	// @return true if the arrestRecordFile is a docket sheet, false if it isn't
 	public function isMDJDocketSheet($arrestRecordFile)
 	{
-		if (safe_preg_match("/Magisterial District Judge/i", $arrestRecordFile))
+		if (preg_match("/Magisterial District Judge/i", $arrestRecordFile))
 			return true;
 		else
 			return false;
@@ -357,7 +357,7 @@ class Arrest
     // sets isJuvenilePhilly = true if the arrest RecordFile is a Philly Juvenile Case
     public function checkIsJuvenilePhilly($line)
     {
-        if (safe_preg_match("/Family Court of Philadelphia/i", $line))
+        if (preg_match("/Family Court of Philadelphia/i", $line))
         {
             $this->setIsJuvenilePhilly(TRUE);
             return TRUE;
@@ -378,7 +378,7 @@ class Arrest
 		if ($this->isMDJDocketSheet($arrestRecordFile[0]))
 		{
 			$this->setIsMDJ(1);
-			if (safe_preg_match(self::$mdjDistrictNumberSearch, $arrestRecordFile[0], $matches))
+			if (preg_match(self::$mdjDistrictNumberSearch, $arrestRecordFile[0], $matches))
 				$this->setMDJDistrictNumber(trim($matches[1]));
 
 		}
@@ -390,16 +390,15 @@ class Arrest
 			// do all of the searches that are common to the MDJ and CP/MC docket sheets
 
 			// figure out which county we are in
-			if (safe_preg_match(self::$countySearch, $line, $matches))
+			if (preg_match(self::$countySearch, $line, $matches))
 				$this->setCounty(trim($matches[1]));
-			elseif (safe_preg_match(self::$mdjCountyAndDispositionDateSearch, $line, $matches))
+			else if (preg_match(self::$mdjCountyAndDispositionDateSearch, $line, $matches))
 			{
 				$this->setCounty(trim($matches[1]));
 				$this->setDispositionDate(trim(($matches[2])));
 			}
-
 			// find the docket Number
-			else if (safe_preg_match(self::$docketSearch, $line, $matches))
+			else if (preg_match(self::$docketSearch, $line, $matches))
 			{
 				$this->setDocketNumber(array(trim($matches[1])));
 
@@ -407,41 +406,41 @@ class Arrest
 				// docket number.  The normal docket number looks like this:
 				// CP-##-CR-########-YYYY or CP-##-SU-#######-YYYYYY; the latter is a summary
 				// so is CP-##-SU-#######-YYYYYY, a summary appeal of a traffic offense
-				if (safe_preg_match("(SU|SA)", trim($matches[3]), $dummy))
+				if (preg_match("(SU|SA)", trim($matches[3]), $dummy))
 					$this->setIsSummaryArrest(TRUE);
 
 				else
 					$this->setIsSummaryArrest(FALSE);
 			}
-			else if (safe_preg_match(self::$mdjDocketSearch, $line, $matches))
+			else if (preg_match(self::$mdjDocketSearch, $line, $matches))
 			{
 				$this->setDocketNumber(array(trim($matches[1])));
 			}
 
-			else if (safe_preg_match(self::$OTNSearch, $line, $matches))
+			else if (preg_match(self::$OTNSearch, $line, $matches))
 				$this->setOTN(trim($matches[1]));
 
-			else if (safe_preg_match(self::$DCSearch, $line, $matches))
+			else if (preg_match(self::$DCSearch, $line, $matches))
 				$this->setDC(trim($matches[1]));
 
 			// find the arrest date.  First check for agency and arrest date (mdj dockets).  Then check for arrest date alone
-			else if (safe_preg_match(self::$mdjArrestingAgencyAndArrestDateSearch, $line, $matches))
+			else if (preg_match(self::$mdjArrestingAgencyAndArrestDateSearch, $line, $matches))
 			{
 				$this->setArrestingAgency(trim($matches[1]));
 				if (isset($matches[2]))
 					$this->setArrestDate(trim($matches[2]));
 			}
 
-			else if (safe_preg_match(self::$arrestDateSearch, $line, $matches))
+			else if (preg_match(self::$arrestDateSearch, $line, $matches))
 				$this->setArrestDate(trim($matches[1]));
 
 			// find the complaint date
-			else if (safe_preg_match(self::$complaintDateSearch, $line, $matches))
+			else if (preg_match(self::$complaintDateSearch, $line, $matches))
 				$this->setComplaintDate(trim($matches[1]));
 
 			// for non-mdj, aresting agency and officer are on the same line, so we have to find
 			// them together and deal with them together.
-			else if (safe_preg_match(self::$arrestingAgencyAndOfficerSearch, $line, $matches))
+			else if (preg_match(self::$arrestingAgencyAndOfficerSearch, $line, $matches))
 			{
 				// first set the arresting agency
 				$this->setArrestingAgency(trim($matches[1]));
@@ -460,7 +459,7 @@ class Arrest
 			}
 
 			// mdj dockets have the arresting office on a line by himself, as last name, first
-			else if (safe_preg_match(self::$mdjArrestingOfficerSearch, $line, $matches))
+			else if (preg_match(self::$mdjArrestingOfficerSearch, $line, $matches))
 			{
 				$officer = trim($matches[1]);
 				// find the comma and switch the order of the names
@@ -476,43 +475,43 @@ class Arrest
 			// judge's name appears in the Judge Assigned field.  If it does, then set it.
 			// Later on, we'll check in the "Final Issuing Authority" field.  If it appears there
 			// and doesn't show up as "migrated," we'll reassign the judge name.
-			else if (safe_preg_match(self::$judgeAssignedSearch, $line, $matches))
+			else if (preg_match(self::$judgeAssignedSearch, $line, $matches))
 			{
 				$judge = trim($matches[1]);
 
 				// check to see if this line has "magisterial district judge" in it.  If it does,
 				// lop off that phrase and then check the next line to see if anything important is on it
-				if (safe_preg_match(self::$magisterialDistrictJudgeSearch, $judge, $judgeMatch))
+				if (preg_match(self::$magisterialDistrictJudgeSearch, $judge, $judgeMatch))
 				{
 					// first catch the judge
 					$judge = trim($judgeMatch[1]);
 
 					// then check the next line to see if there is anything of interest
 					$i = $line_num+1;
-					if (safe_preg_match(self::$judgeSearchOverflow, $arrestRecordFile[$i], $judgeOverflowMatch))
+					if (preg_match(self::$judgeSearchOverflow, $arrestRecordFile[$i], $judgeOverflowMatch))
 						$judge .= " " . trim($judgeOverflowMatch[1]);
 				}
 
-				if (!safe_preg_match(self::$migratedJudgeSearch, $judge, $junk))
+				if (!preg_match(self::$migratedJudgeSearch, $judge, $junk))
 					$this->setJudge($judge);
 
 				// if this is an mdj docket, the complaint date will also be on this same line, so we want to search for that as well
-				if (safe_preg_match(self::$mdjComplaintDateSearch, $line, $matches))
+				if (preg_match(self::$mdjComplaintDateSearch, $line, $matches))
 				$this->setComplaintDate(trim($matches[1]));
 			}
 
-			else if (safe_preg_match(self::$judgeSearch, $line, $matches))
+			else if (preg_match(self::$judgeSearch, $line, $matches))
 			{
 				// make sure the judge field isn't blank or doesn't equal "migrated"
-				if (!safe_preg_match(self::$migratedJudgeSearch, $matches[1], $junk) && trim($matches[1]) != "")
+				if (!preg_match(self::$migratedJudgeSearch, $matches[1], $junk) && trim($matches[1]) != "")
 					$this->setJudge(trim($matches[1]));
 			}
 
 
-			else if  (safe_preg_match(self::$DOBSearch, $line, $matches))
+			else if  (preg_match(self::$DOBSearch, $line, $matches))
 				$this->setDOB(trim($matches[1]));
 
-			else if (safe_preg_match(self::$nameSearch, $line, $matches))
+			else if (preg_match(self::$nameSearch, $line, $matches))
 			{
 				$this->setFirstName(trim($matches[2]));
 				$this->setLastName(trim($matches[1]));
@@ -521,25 +520,25 @@ class Arrest
 				$person->addAliases(array($this->getLastName() . ", " . $this->getFirstName()));
 			}
 
-			else if (safe_preg_match(self::$dispDateSearch, $line, $matches))
+			else if (preg_match(self::$dispDateSearch, $line, $matches))
 				$this->setDispositionDate($matches[1]);
 
 			// find aliases.  Only try to do so if we haven't looked for aliases previously.
-			else if (!$this->pastAliases && safe_preg_match(self::$aliasNameStartSearch, $line))
+			else if (!$this->pastAliases && preg_match(self::$aliasNameStartSearch, $line))
 
 			{
 
 				$i = $line_num+1;
-				while (!safe_preg_match(self::$aliasNameEndSearch, $arrestRecordFile[$i]))
+				while (!preg_match(self::$aliasNameEndSearch, $arrestRecordFile[$i]))
 				{
 					// once in a while, the aliases are at the end of a page, which means we get to the footer information
 					// before we get to the regular marker of the end of the aliases.  We have to watch out for this
 					// and break if we find it
-					if (safe_preg_match(self::$endOfPageSearch, $arrestRecordFile[$i]))
+					if (preg_match(self::$endOfPageSearch, $arrestRecordFile[$i]))
 						break;
 
 					// parse out the name from the rest of the alias and then push the alias onto the array of aliases
-					if (safe_preg_match("/\w/", $arrestRecordFile[$i]))
+					if (preg_match("/\w/", $arrestRecordFile[$i]))
 					{
 						// first parse out the name from the rest of the alias
 						// The name can be in two forms: one form is just the name on a line; the other is the name, followed by the SSN and SID.
@@ -558,7 +557,7 @@ class Arrest
 				$person->addAliases($this->getAliases());
 			}
 			// charges can be spread over two lines sometimes; we need to watch out for that
-			else if (safe_preg_match(self::$chargesSearch2, $line, $matches))
+			else if (preg_match(self::$chargesSearch2, $line, $matches))
 			{
 				// ignore this charge if it is in the exclusion array
 				if (in_array(trim($matches[2]), self::$ignoreDisps))
@@ -570,7 +569,7 @@ class Arrest
 				// this happens on long charges, like possession of controlled substance
 				$i = $line_num+1;
 
-				if (safe_preg_match(self::$chargesSearchOverflow, $arrestRecordFile[$i], $chargeMatch))
+				if (preg_match(self::$chargesSearchOverflow, $arrestRecordFile[$i], $chargeMatch))
 				{
 					$charge .= " " . trim($chargeMatch[1]);
 					$i++;
@@ -582,7 +581,7 @@ class Arrest
 				// need to grab the disposition date as well, which is on the next line
 				if (isset($this->dispositionDate))
 					$dispositionDate = $this->getDispositionDate();
-				else if (safe_preg_match(self::$dispDateSearch2, $arrestRecordFile[$i], $dispMatch))
+				else if (preg_match(self::$dispDateSearch2, $arrestRecordFile[$i], $dispMatch))
 					// set the date;
 					$dispositionDate = $dispMatch[2];
 				else
@@ -592,7 +591,7 @@ class Arrest
 			}
 
 			// match a charge for MDJ
-			else if ($this->getIsMDJ() && safe_preg_match(self::$mdjChargesSearch, $line, $matches))
+			else if ($this->getIsMDJ() && preg_match(self::$mdjChargesSearch, $line, $matches))
 			{
 				$charge = trim($matches[4]);
 
@@ -600,7 +599,7 @@ class Arrest
 				// this happens on long charges, like possession of controlled substance
 				$i = $line_num+1;
 
-				if (safe_preg_match(self::$chargesSearchOverflow, $arrestRecordFile[$i], $chargeMatch))
+				if (preg_match(self::$chargesSearchOverflow, $arrestRecordFile[$i], $chargeMatch))
 				{
 					$charge .= " " . trim($chargeMatch[1]);
 					$i++;
@@ -616,33 +615,31 @@ class Arrest
 				$this->addCharge($charge);
 			}
 
-			else if (safe_preg_match(self::$bailSearch, $line, $matches))
+			else if (preg_match(self::$bailSearch, $line, $matches))
 			{
 				$this->addBailCharged(doubleval(str_replace(",","",$matches[1])));
 				$this->addBailPaid(doubleval(str_replace(",","",$matches[2])));  // the amount paid
 				$this->addBailAdjusted(doubleval(str_replace(",","",$matches[3])));
 				$this->addBailTotal(doubleval(str_replace(",","",$matches[5])));  // tot final amount, after all adjustments
 			}
-
-			else if (safe_preg_match(self::$costsSearch, $line, $matches))
+			else if (preg_match(self::$costsSearch, $line, $matches))
 			{
 				$this->setCostsCharged(doubleval(str_replace(",","",$matches[1])));
 				$this->setCostsPaid(doubleval(str_replace(",","",$matches[2])));  // the amount paid
 				$this->setCostsAdjusted(doubleval(str_replace(",","",$matches[3])));
 				$this->setCostsTotal(doubleval(str_replace(",","",$matches[5])));  // tot final amount, after all adjustments
 			}
-
             // search for things that only have to do with juvenile cases in philly
-            else if ($this->isJuvenilePhilly && safe_preg_match(self::$juvenileNumberSearch, $line, $matches))
+            else if ($this->isJuvenilePhilly && preg_match(self::$juvenileNumberSearch, $line, $matches))
                 $this->setJNumber(trim($matches[1]));
 
-            else if ($this->isJuvenilePhilly && safe_preg_match(self::$SIDSearch, $line, $matches))
+            else if ($this->isJuvenilePhilly && preg_match(self::$SIDSearch, $line, $matches))
                 $this->setSID(trim($matches[1]));
 
-            else if ($this->isJuvenilePhilly && safe_preg_match(self::$PIDSearch, $line, $matches))
+            else if ($this->isJuvenilePhilly && preg_match(self::$PIDSearch, $line, $matches))
                 $this->setPID(trim($matches[1]));
 
-            else if ($this->isJuvenilePhilly && safe_preg_match(self::$juvenileNameSearch, $line, $matches))
+            else if ($this->isJuvenilePhilly && preg_match(self::$juvenileNameSearch, $line, $matches))
             {
                 list($first,$last) = explode(" ", trim($matches[1]),2);
                 $this->setFirstName($first);
@@ -655,7 +652,7 @@ class Arrest
             // So rather than search for it, I am going to search for EVERY bare date entry and store
             // each as the discharge date.  The final one will override all previous and we will have a
             // discharge date!
-	    else if ($this->isJuvenilePhilly && safe_preg_match(self::$dischargeDateSearch, trim($line), $matches)) {
+	    else if ($this->isJuvenilePhilly && preg_match(self::$dischargeDateSearch, trim($line), $matches)) {
                $this->setJDischargeDate(trim($matches[1]));
 	    }
 	  }
@@ -868,7 +865,7 @@ class Arrest
 		else
 		{
 			$criminalMatch = "/CR|SU|SA|MJ|JV|MD/";
-			if (safe_preg_match($criminalMatch, $this->getFirstDocketNumber()))
+			if (preg_match($criminalMatch, $this->getFirstDocketNumber()))
 			{
 					$this->setIsCriminal(TRUE);
 					return TRUE;
@@ -1171,7 +1168,7 @@ class Arrest
 		else
 		{
 			$match = "/^CP/";
-			if (safe_preg_match($match, $this->getFirstDocketNumber()))
+			if (preg_match($match, $this->getFirstDocketNumber()))
 			{
 				$this->setIsCP(TRUE);
 				return TRUE;
@@ -1246,7 +1243,7 @@ class Arrest
 			foreach ($this->getCharges() as $num=>$charge)
 			{
 				// if we match Held for court, setheldforcourt = true
-				if (safe_preg_match($heldForCourtMatch,$charge->getDisposition()))
+				if (preg_match($heldForCourtMatch,$charge->getDisposition()))
 				{
 					$this->setIsHeldForCourt(TRUE);
 					return TRUE;

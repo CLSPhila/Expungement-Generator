@@ -57,7 +57,7 @@ class ArrestSummary
 	// @return true if the arrestRecordFile is a summary docket sheet of all arrests, false if it isn't
 	public static function isArrestSummary($arrestRecordFile)
 	{
-		if (safe_preg_match("/Court Summary/i", $arrestRecordFile[1]))
+		if (preg_match("/Court Summary/i", $arrestRecordFile[1]))
 			return true;
 		else
 			return false;
@@ -66,7 +66,7 @@ class ArrestSummary
 	// @return true if the arrestRecordFile is a summary docket sheet of all arrests, false if it isn't
 	public static function isArrestSummaryFromLine($arrestRecord)
 	{
-		if (safe_preg_match("/Court Summary/i", $arrestRecord))
+		if (preg_match("/Court Summary/i", $arrestRecord))
 			return true;
 		else
 			return false;
@@ -123,7 +123,7 @@ class ArrestSummary
 			if ($this->archived)
 			{
 				// add a new arrest to the queue
-				if (safe_preg_match(self::$archivedCaseNumberSearch, $line, $matches))
+				if (preg_match(self::$archivedCaseNumberSearch, $line, $matches))
 				{
 					$arrest = new Arrest();
 					$arrest->setDocketNumber(array(trim($matches[1])));
@@ -132,18 +132,17 @@ class ArrestSummary
 			}
 				
 			// check to see if we are at the "archived" section, where only case numbers are listed without information beyond that
-			if (safe_preg_match(self::$archivedSearch, trim($line),$matches))
+			if (preg_match(self::$archivedSearch, trim($line), $matches))
 				$this->archived=true;
-				
-			if (safe_preg_match(self::$SIDSearch, $line, $matches))
+			if (preg_match(self::$SIDSearch, $line, $matches))
 				$this->setSID(trim($matches[1]));
-			if (safe_preg_match(self::$PIDSearch, $line, $matches))
+			if (preg_match(self::$PIDSearch, $line, $matches))
 				$this->setPID(trim($matches[1]));
 
 			// if we match the docket/DC/OTN, we also want to check the next line which will have
 			// the arrest date and the judge
 			// We also want to create a new arrest and add that arrest to the array
-			if (safe_preg_match(self::$docketDCNOTNSearch, $line, $matches))
+			if (preg_match(self::$docketDCNOTNSearch, $line, $matches))
 			{
 				//print $line . "<br/>";
 				$arrest = new Arrest();
@@ -152,7 +151,7 @@ class ArrestSummary
 					$arrest->setDC(trim($matches[3]));
 				if (isset($matches[4]))
 					$arrest->setOTN(trim($matches[4]));
-				if (safe_preg_match(self::$arrestDateDispDateJudgeSearch,$arrestRecordFile[$line_num+1],$matches2))
+				if (preg_match(self::$arrestDateDispDateJudgeSearch,$arrestRecordFile[$line_num+1],$matches2))
 				{
 					// only set these if the variables are not empty (can't do empty(trim($matches) until PHP 5.5))
 					if (trim($matches2[1]) != false)
@@ -162,7 +161,7 @@ class ArrestSummary
 
 					// we don't want to set the judge if the judge is "Migrated Judge" or there is 
 					// no judge listed.
-					if (!safe_preg_match(self::$migratedJudgeSearch, $matches2[3], $junk) && trim($matches2[3]) != "")
+					if (!preg_match(self::$migratedJudgeSearch, $matches2[3], $junk) && trim($matches2[3]) != "")
 
 						$arrest->setJudge(trim($matches2[3]));
 				}

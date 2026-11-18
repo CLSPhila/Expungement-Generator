@@ -61,7 +61,8 @@ class CPCMS
         "MDJ" => $mdj
       );
       foreach ($results as $res)  {
-        if (safe_preg_match("^MJ.*", $res)) {
+        $docket_num = is_array($res) ? $res["docket_number"] : $res;
+        if (preg_match("/^MJ.*/", $docket_num)) {
           $split["MDJ"][] = $res;
         } else {
           $split["CP"][] = $res;
@@ -391,7 +392,7 @@ print "
             return 0;
 
         // if this is a closed case and it is criminal, return it
-        if (safe_preg_match("/Closed/", $aResults[0]["case_status"]) && safe_preg_match("/\-".$bestDocketTell."\-/", $aResults[0]["docket_number"]))
+        if (preg_match("/Closed/", $aResults[0]["case_status"]) && preg_match("/\-".$bestDocketTell."\-/", $aResults[0]["docket_number"]))
             return $aResults[0]["summary_url"];
 
         // otherwise, remove the first element from the array (the one that we just rejected) and try again

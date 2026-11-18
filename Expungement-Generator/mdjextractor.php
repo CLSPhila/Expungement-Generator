@@ -66,25 +66,25 @@ foreach ($mdjFile as $line_num => $line)
 	// and continue to the next county
 	
 	// when we match district, we also know that the address is on the second line down
-	if (safe_preg_match($districtNumberSearch, $line, $matches))
+	if (preg_match($districtNumberSearch, $line, $matches))
 	{
 		$district = trim($matches[1]);
 		$judge = trim($mdjFile[$line_num+1]);
 		$address = trim($mdjFile[$line_num+2]);
 	}
-	elseif (safe_preg_match($cityStateSearch, $line, $matches))
+	elseif (preg_match($cityStateSearch, $line, $matches))
 	{
 		$city = preg_replace("/\s+/"," ", trim($matches[1]));
 		$state = preg_replace("/\s+/"," ", trim($matches[2]));
 		$zip = preg_replace("/\s+/"," ", trim($matches[3]));
 	}
-	elseif (safe_preg_match($phoneSearch, $line, $matches))
+	elseif (preg_match($phoneSearch, $line, $matches))
 		$phone = trim($matches[1]);
-	elseif (safe_preg_match($faxSearch, $line, $matches))
+	elseif (preg_match($faxSearch, $line, $matches))
 		$fax = trim($matches[1]);
 		
 	// we have to check if $district is set, becuase it won't be on the first go around.
-	elseif (safe_preg_match($firstLineSearch, $line, $matches) && isset($district))
+	elseif (preg_match($firstLineSearch, $line, $matches) && isset($district))
 	{
 		$sql = "INSERT INTO mdjcourt (district, judge, address, city, state, zip, phone, fax, courtName) VALUES ('". ((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $district) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', '". ((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $judge) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', '". ((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $address) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', '". ((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $city) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', '". ((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $state) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', '". ((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $zip) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', '". ((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $phone) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', '". ((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $fax) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', 'Magisterial District Court ". ((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $district) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "')";
 		
