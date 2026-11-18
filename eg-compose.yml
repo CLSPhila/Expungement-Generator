@@ -20,7 +20,8 @@ services:
             DB_USER: eg_user
             DB_PASS: somerandompassword
             SENDGRID_KEY: somerandomkey
-            docketscaperAPIURL: "docketscraper_api"
+            docketscraperAPIURL: "${DOCKET_SCRAPER_API_URL}"
+            docketscraperAPIKEY: "${DOCKET_SCRAPER_API_KEY}"
         networks:
             - eg-net
         ports:
@@ -43,12 +44,5 @@ services:
             - eg-net
         expose:
             - "3306"
-    docketscraper_api:
-        image: "natev/docketscraper_api"
-        restart: always
-        networks:
-          - eg-net
-        expose:
-            - "8800"
 networks:
     eg-net:

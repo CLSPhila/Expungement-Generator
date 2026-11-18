@@ -26,6 +26,7 @@ $toolsDir = join(DIRECTORY_SEPARATOR, array("", "usr", "local", "bin"));
 $includeDir = join(DIRECTORY_SEPARATOR, array("", "usr", "local", "include"));
 $wwwdir = join(DIRECTORY_SEPARATOR, array ($basedir, "html"));
 $docketScraperAPIURL = getenv("docketscraperAPIURL");
+$docketScraperAPIKEY = getenv("docketscraperAPIKEY");
 $baseURL = getenv("BASE_URL");
 $pdftotext = $toolsDir . DIRECTORY_SEPARATOR . "pdftotext";
 $sendGridApiKey = getenv("SENDGRID_KEY");

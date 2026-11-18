@@ -20,7 +20,8 @@ services:
             DB_USER: eg_user
             DB_PASS: somerandompassword
             SENDGRID_KEY: somerandomkey
-            docketscaperAPIURL: someurl
+            docketscraperAPIURL: "${DOCKET_SCRAPER_API_URL}"
+            docketscraperAPIKEY: "${DOCKET_SCRAPER_API_KEY}"
         networks:
             - eg-net
         ports:
