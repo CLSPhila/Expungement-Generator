@@ -66,7 +66,7 @@ class Record
         // loop over all of the files that we uploaded and read them in to see if they are expungeable
         foreach($docketFiles["userFile"]["tmp_name"] as $key => $file)
         {
-            error_log("pdftotext now");
+            error_log("pdftotext now on " . $file);
 
             $command = $pdftotext . " -layout \"" . $file . "\" \"" . $tempFile . "\"";
             //print $command;
@@ -259,13 +259,13 @@ class Record
             // check this arrest to see if there are fines/costs owed or if there are unsealable
             // charges in the case
             $this->cleanSlateEligible['FinesCosts'][$arrest->getFirstDocketNumber()]['answer'] = $arrest->checkCleanSlateHasOutstandingFinesCosts();
-            $this->cleanSlateEligible['UnsealableCharge'][$arrest->getFirstDocketNumber()] = $arrest->checkCleanSlateIsUnsealableOffense();
+            $this->cleanSlateEligible['UnsealableCharge'][$arrest->getFirstDocketNumber()]['answer'] = $arrest->checkCleanSlateIsUnsealableOffense();
 
             // if there are any unsealable charges, set to True so that we can filter this case out
             if (array_filter($this->cleanSlateEligible['UnsealableCharge'][$arrest->getFirstDocketNumber()], array(__CLASS__, 'not_empty')))
                 $this->cleanSlateEligible['UnsealableCharge'][$arrest->getFirstDocketNumber()]['answer'] = TRUE;
             else
-                $this->cleanSlateEligible['UnsealableCharge'][$arrest->getFirstDocketNumber()] = FALSE;
+                $this->cleanSlateEligible['UnsealableCharge'][$arrest->getFirstDocketNumber()]['answer'] = FALSE;
 
 
             // if there are no global exclusions and this case is eligible
@@ -276,9 +276,8 @@ class Record
             // The solution is probably to just make another function, but that feels silly.
             // Maybe overload the function but with defaults to allow for
             // MDs to be excluded?
-           //
             if(!$this->cleanSlateEligible['FinesCosts'][$arrest->getFirstDocketNumber()]['answer'] &&
-               !$this->cleanSlateEligible['UnsealableCharge']['answer'] &&
+               !$this->cleanSlateEligible['UnsealableCharge'][$arrest->getFirstDocketNumber()]['answer'] &&
                !$arrest->isArrestExpungement())
             {
                $arrest->setIsCleanSlateEligible(TRUE);
