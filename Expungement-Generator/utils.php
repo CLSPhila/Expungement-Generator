@@ -211,7 +211,7 @@ function dateDifference($date1, $date2)
 // @param a date in the form MM/DD/YYYY
 function dateConvert($docketDate)
 {
-	if (safe_preg_match("/\d{1,2}\/\d{1,2}\/\d{2,4}/",$docketDate))
+	if (preg_match("/\d{1,2}\/\d{1,2}\/\d{2,4}/",$docketDate))
 	{
 		$mysqlDate = new DateTime($docketDate);
 		return $mysqlDate->format('Y-m-d');
@@ -317,13 +317,4 @@ function createTrackingSpreadsheet($names, $programid)
 
 
 
-}
-
-function safe_preg_match($pattern, $itemtocheck)
-{
-	if (! is_string($itemtocheck))
-	{
-		return 0;
-	}
-	return preg_match($pattern, $itemtocheck);
 }

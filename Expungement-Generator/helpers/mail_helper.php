@@ -73,12 +73,12 @@ function mailDestination($request) {
 	// emailDomainField are set and have valid characters,
 	// use them to build an email address. Otherwise return the 'current_user' from the request object.
 	//error_log("building email");
-	if ( isset($request['emailAddressField']) && safe_preg_match( '/^[a-z]{0,20}$/i', $request['emailAddressField'] )===1
+	if ( isset($request['emailAddressField']) && preg_match( '/^[a-z]{0,20}$/i', $request['emailAddressField'] )===1
 			&& isset($request[$request['emailAddressField']]) ) {
 		//error_log("emailaddressfield is " . $request['emailAddressField']);
 		//emailAddressField is valid, so we can use it for the emailAddress
 		$emailAddress = $request[$request['emailAddressField']];
-		if ( isset($request['emailDomain'] ) && safe_preg_match('/^[a-z\-\.]{0,30}\.(org|com|net)$/', $request['emailDomain'])===1 ) {
+		if ( isset($request['emailDomain'] ) && preg_match('/^[a-z\-\.]{0,30}\.(org|com|net)$/', $request['emailDomain'])===1 ) {
 			//emailDomain is valid (something like casemanager.com)
 			error_log("emailDomain is " . $request['emailDomain']);
 			$emailDomain = $request['emailDomain'];

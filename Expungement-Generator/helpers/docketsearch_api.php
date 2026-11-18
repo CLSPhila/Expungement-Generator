@@ -15,8 +15,8 @@ require_once("config.php");
 //   the search.
 function docketNameSearch($firstName, $lastName, $dob) {
   global $docketScraperAPIURL;
-  $ch = curl_init($docketScraperAPIURL . "/" .
-                  "ujs/search/name/");
+  global $docketScraperAPIKEY;
+  $ch = curl_init($docketScraperAPIURL . "/ujs/search/name/");
   $jsonData = array(
     "first_name" => $firstName,
     "last_name" => $lastName
@@ -36,8 +36,8 @@ function docketNameSearch($firstName, $lastName, $dob) {
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
   curl_setopt($ch, CURLOPT_VERBOSE, 0);
   //Set the content type to application/json
-  curl_setopt(
-      $ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+  $headers = array('Content-Type: application/json', 'Authorization: Token ' . $docketScraperAPIKEY);
+  curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
   $result = curl_exec($ch);
   curl_close($ch);
   //get the json results
@@ -51,6 +51,7 @@ function docketNameSearch($firstName, $lastName, $dob) {
 function manyDocketNumberSearch($dnQueue, $mdj) {
   error_log("Searching for " . count($dnQueue) . " docket numbers at once.");
   global $docketScraperAPIURL;
+  global $docketScraperAPIKEY;
   $ch = curl_init($docketScraperAPIURL . "/ujs/search/docket/many/");
   $jsonData = array(
     "docket_numbers" => $dnQueue
@@ -61,8 +62,9 @@ function manyDocketNumberSearch($dnQueue, $mdj) {
   //Attach our encoded JSON string to the POST fields.
   curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonDataEncoded);
   //Set the content type to application/json
+  $headers = array('Content-Type' => 'application/json', 'Authorization' => 'Token ' . $docketScraperAPIKEY);
   curl_setopt(
-      $ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+      $ch, CURLOPT_HTTPHEADER, $headers);
   //Do not print request results.
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
   curl_setopt($ch, CURLOPT_VERBOSE, 0);
@@ -93,6 +95,7 @@ function manyDocketNumberSearch($dnQueue, $mdj) {
 //   associative array with information about a specific docket.
 function docketNumberSearch($docketNumber, $mdj) {
   global $docketScraperAPIURL;
+  global $docketScraperAPIKEY;
   $ch = curl_init($docketScraperAPIURL . "/ujs/search/docket/");
   $jsonData = array(
     "docket_number" => $docketNumber
@@ -104,8 +107,9 @@ function docketNumberSearch($docketNumber, $mdj) {
   //Attach our encoded JSON string to the POST fields.
   curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonDataEncoded);
   //Set the content type to application/json
+  $headers = array('Content-Type' => 'application/json', 'Authorization' => 'Token ' . $docketScraperAPIKEY);
   curl_setopt(
-      $ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+      $ch, CURLOPT_HTTPHEADER, $headers);
   //Do not print request results.
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
   curl_setopt($ch, CURLOPT_VERBOSE, 0);
